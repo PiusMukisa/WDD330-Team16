@@ -11,6 +11,35 @@
     <link rel="stylesheet" href="/css/style.css" />
 
     <script src="../js/cart.js" type="module"></script>
+
+    <style>
+      .sort-options {
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .sort-options label {
+        font-weight: bold;
+        font-size: 1rem;
+      }
+
+      .sort-options select {
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        cursor: pointer;
+      }
+
+      .sort-options select:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+      }
+    </style>
   </head>
 
   <body>
@@ -57,9 +86,15 @@
     <main class="divider">
       <section class="products">
         <h2>My Cart</h2>
-
+        <div class="sort-options">
+          <label for="sort">Sort by:</label>
+          <select id="sort" onchange="sortProducts()">
+            <option value="name">Name</option>
+            <option value="price">Price</option>
+          </select>
+        </div>
         <ul class="product-list">
-          <!-- <li class="cart-card divider">
+          <li class="cart-card divider">
             <a href="product_pages/marmot-ajax-3.html" class="cart-card__image">
               <img
                 src="images/tents/marmot-ajax-tent-3-person-3-season-in-pale-pumpkin-terracotta~p~880rr_01~320.jpg"
@@ -71,7 +106,7 @@
             </a>
             <p class="cart-card__color">Pale Pumpkin/Terracotta</p>
             <p class="cart-card__quantity">qty: 1</p>
-            <p class="cart-card__price">$199.99</p>
+            <p class="cart-card__price">$199.99 <span class="cart-discount">20% off! Adventure for less!</span> <span class="cart-discount-badge">5% OFF</span></p>
           </li>
           <li class="cart-card divider">
             <a href="product_pages/marmot-ajax-3.html" class="cart-card__image">
@@ -87,12 +122,35 @@
             >
             <p class="cart-card__color">Golden Oak/Saffron Yellow</p>
             <p class="cart-card__quantity">qty: 1</p>
-            <p class="cart-card__price">$199.99</p>
-          </li> -->
+            <p class="cart-card__price">$69.99 <span class="cart-discount">30% off! Budget-friendly camping!</span> <span class="cart-discount-badge">5% OFF</span></p>
+          </li>
         </ul>
       </section>
     </main>
 
     <footer>&copy;NOT a real business</footer>
+
+    <script>
+      function sortProducts() {
+        const sortOption = document.getElementById('sort').value;
+        const productList = document.querySelector('.product-list');
+        const products = Array.from(productList.querySelectorAll('.cart-card'));
+
+        products.sort((a, b) => {
+          if (sortOption === 'name') {
+            const nameA = a.querySelector('.card__name').textContent.trim().toLowerCase();
+            const nameB = b.querySelector('.card__name').textContent.trim().toLowerCase();
+            return nameA.localeCompare(nameB);
+          } else if (sortOption === 'price') {
+            const priceA = parseFloat(a.querySelector('.cart-card__price').textContent.replace(/[^0-9.]/g, ''));
+            const priceB = parseFloat(b.querySelector('.cart-card__price').textContent.replace(/[^0-9.]/g, ''));
+            return priceA - priceB;
+          }
+        });
+
+        productList.innerHTML = '';
+        products.forEach(product => productList.appendChild(product));
+      }
+    </script>
   </body>
 </html>
